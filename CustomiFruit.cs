@@ -6,7 +6,7 @@ using iFruitAddon2.Image_Types;
 namespace iFruitAddon2
 {
     //public delegate void ContactSelectedEvent(iFruitContactCollection sender, iFruitContact selectedItem);
-    public delegate void ContactAnsweredEvent(IFruitContact contact);
+    public delegate void ContactAnsweredEvent(iFruitContact contact);
 
     public class CustomiFruit
     {

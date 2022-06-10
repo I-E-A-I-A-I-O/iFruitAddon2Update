@@ -4,7 +4,7 @@ using GTA.Native;
 
 namespace iFruitAddon2
 {
-    public class IFruitContactCollection : List<IFruitContact>
+    public class IFruitContactCollection : List<iFruitContact>
     {
         public static int CurrentIndex = 40;
         private bool _shouldDraw = true;

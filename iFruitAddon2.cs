@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using GTA;
+using iFruitAddon2;
 using iFruitAddon2.Properties;
 
 
@@ -34,7 +35,7 @@ using iFruitAddon2.Properties;
         > RPH : Reste ouvert sans icône de contact (appel d'un contact inconnu géré par RPH), impossible de fermer le téléphone sans le détruire et tuer les scripts
     
 */
-namespace iFruitAddon2
+namespace iFruitAddon2Update
 {
     class IFruitAddon2 : Script
     {

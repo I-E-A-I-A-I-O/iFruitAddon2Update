@@ -3,10 +3,11 @@ using System.IO;
 using GTA;
 using GTA.Native;
 using iFruitAddon2.Image_Types;
+using iFruitAddon2Update;
 
 namespace iFruitAddon2
 {
-    public class IFruitContact
+    public class iFruitContact
     {
         private bool _dialActive, _busyActive;
         private int _dialSoundId = -1;
@@ -17,7 +18,7 @@ namespace iFruitAddon2
         /// Fired when the contact picks up the phone.
         /// </summary>
         public event ContactAnsweredEvent Answered;
-        protected virtual void OnAnswered(IFruitContact sender) { Answered?.Invoke(this); }
+        protected virtual void OnAnswered(iFruitContact sender) { Answered?.Invoke(this); }
 
         /// <summary>
         /// The name of the contact.
@@ -51,7 +52,7 @@ namespace iFruitAddon2
         /// </summary>
         public bool Bold { get; set; } = false;
 
-        public IFruitContact(string name)
+        public iFruitContact(string name)
         {
             UpdateContactIndex();
 

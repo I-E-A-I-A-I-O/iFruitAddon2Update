@@ -7,8 +7,8 @@
     <ProjectGuid>{511A3666-514F-4583-8D2B-1F096554C86E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>iFruitAddon2</RootNamespace>
-    <AssemblyName>iFruitAddon2</AssemblyName>
+    <RootNamespace>iFruitAddon2Update</RootNamespace>
+    <AssemblyName>iFruitAddon2Update</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
