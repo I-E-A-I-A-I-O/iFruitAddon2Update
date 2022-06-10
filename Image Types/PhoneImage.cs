@@ -1,7 +1,7 @@
 ﻿
 using GTA.Native;
 
-namespace iFruitAddon2
+namespace iFruitAddon2.Image_Types
 {
     public abstract class PhoneImage
     {
@@ -24,7 +24,7 @@ namespace iFruitAddon2
         /// Load a texture dictionary by name.
         /// </summary>
         /// <param name="txd">Name of the texture dictionary.</param>
-        private void LoadTextureDict(string txd)
+        private static void LoadTextureDict(string txd)
         {
             if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, txd))
                 Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, txd, 0);

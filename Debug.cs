@@ -1,10 +1,4 @@
 ﻿#if DEBUG
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using GTA;
 using GTA.Native;
 
@@ -12,7 +6,7 @@ namespace iFruitAddon2
 {
     public static class Debug
     {
-        public static int ContactIndex { get => iFruitAddon2.ContactIndex; }
+        public static int ContactIndex => IFruitAddon2.ContactIndex;
 
         public static void DrawText(string text, int font, bool centre, float x, float y, float scale, int r, int g, int b, int a)
         {
@@ -25,9 +19,9 @@ namespace iFruitAddon2
             Function.Call(Hash.SET_TEXT_DROP_SHADOW);
             Function.Call(Hash.SET_TEXT_OUTLINE);
             Function.Call(Hash.SET_TEXT_CENTRE, centre);
-            Function.Call(Hash._SET_TEXT_ENTRY, "STRING");
-            Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, text);
-            Function.Call(Hash._DRAW_TEXT, x, y);
+            Function.Call(Hash.BEGIN_TEXT_COMMAND_DISPLAY_TEXT, "STRING");
+            Function.Call(Hash.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME, text);
+            Function.Call(Hash.END_TEXT_COMMAND_DISPLAY_TEXT, x, y);
         }
 
         public static void DestroyPhone(int handle)

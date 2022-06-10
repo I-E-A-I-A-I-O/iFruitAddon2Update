@@ -1,16 +1,14 @@
-﻿
-using GTA;
+﻿using GTA;
 using GTA.Native;
 
-namespace iFruitAddon2
+namespace iFruitAddon2;
+
+public static class Helper
 {
-    public static class Helper
+    public static string SetBold(this string text, bool bold)
     {
-        public static string SetBold(this string text, bool bold)
-        {
-            if (bold) return text.ToLower();
-            else return text.ToUpper();
-        }
+        if (bold) return text.ToLower();
+        return text.ToUpper();
     }
 }
 
@@ -44,4 +42,3 @@ public static class Tools
 
     }
 }
-

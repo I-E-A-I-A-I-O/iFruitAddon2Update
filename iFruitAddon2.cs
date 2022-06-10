@@ -4,7 +4,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using GTA;
-
+using iFruitAddon2.Properties;
 
 
 /*
@@ -36,43 +36,40 @@ using GTA;
 */
 namespace iFruitAddon2
 {
-    class iFruitAddon2 : Script
+    class IFruitAddon2 : Script
     {
-        private static bool _initialized = false;
-        internal static bool Initialized { get => _initialized; }
+        internal static bool Initialized { get; private set; }
 
-        private static int _gamePID;
-        internal static int GamePID { get => _gamePID; }
+        internal static int GamePid { get; private set; }
 
-        private static readonly string _mainDir = AppDomain.CurrentDomain.BaseDirectory + "\\iFruitAddon2";
-        private static string _configFile = _mainDir + "\\config.ini";
+        private static readonly string MainDir = AppDomain.CurrentDomain.BaseDirectory + "\\iFruitAddon2";
+        private static readonly string ConfigFile = MainDir + "\\config.ini";
 
-        private static string _tempFilePath;
+        private static string? _tempFilePath;
 
-        private static int contactIndex = 40;
-        public static int ContactIndex { get => contactIndex; internal set => contactIndex = value; }
+        private static int _contactIndex = 40;
+        public static int ContactIndex { get => _contactIndex; internal set => _contactIndex = value; }
 
-        private static ScriptSettings _config;
-        public static ScriptSettings Config { get => _config; private set => _config = value; }
+        public static ScriptSettings? Config { get; private set; }
 
-        private bool CheckForUpdates = true;
+        private bool _checkForUpdates = true;
 
 
-        public iFruitAddon2()
+        public IFruitAddon2()
         {
             Tick += Initialize;
         }
 
-        public static string GetTempFilePath()
+        public static string? GetTempFilePath()
         {
-            if (!Directory.Exists(_mainDir))
+            if (!Directory.Exists(MainDir))
             {
                 Logger.Log("Creating main directory.");
-                Directory.CreateDirectory(_mainDir);
+                Directory.CreateDirectory(MainDir);
             }
 
-            _gamePID = Process.GetProcessesByName("GTA5")[0]?.Id ?? 0;
-            return _mainDir + "\\" + _gamePID.ToString() + ".tmp";
+            GamePid = Process.GetProcessesByName("GTA5")[0]?.Id ?? 0;
+            return MainDir + "\\" + GamePid + ".tmp";
         }
 
         private void Initialize(object sender, EventArgs e)
@@ -81,82 +78,80 @@ namespace iFruitAddon2
             _tempFilePath = GetTempFilePath();
 
             // Removing old temp files (if the game has crashed, the file were not deleted)
-            foreach (string file in Directory.GetFiles(_mainDir, "*.tmp"))
+            foreach (var file in Directory.GetFiles(MainDir, "*.tmp"))
             {
-                FileInfo tempFileInfo = new FileInfo(_tempFilePath), fileInfo = new FileInfo(file);
-                if ((tempFileInfo.Name != fileInfo.Name) && File.Exists(file))
+                if (_tempFilePath != null)
                 {
-                    // Reset log file
-                    Logger.ResetLogFile();
+                    FileInfo tempFileInfo = new(_tempFilePath), fileInfo = new(file);
+                    if (tempFileInfo.Name != fileInfo.Name && File.Exists(file))
+                    {
+                        // Reset log file
+                        Logger.ResetLogFile();
 
-                    // Remove old temp file
-                    File.Delete(file);
+                        // Remove old temp file
+                        File.Delete(file);
+                    }
                 }
             }
 
             while (Game.IsLoading)
                 Yield();
-            while (Game.IsScreenFadingIn)
+            while (GTA.UI.Screen.IsFadingIn)
                 Yield();
 
             LoadConfigValues();
-            if (CheckForUpdates)
+            if (_checkForUpdates)
                 if (IsUpdateAvailable()) NotifyNewUpdate();
 
-            _initialized = true;
+            Initialized = true;
 
             Tick -= Initialize;
         }
-
+        
         // Dispose Event
-        protected override void Dispose(bool A_0)
+        protected void Dispose(bool a0)
         {
-            if (A_0)
-            {
-                if (File.Exists(_tempFilePath))
-                    File.Delete(_tempFilePath);
-            }
+            if (!a0) return;
+            if (!File.Exists(_tempFilePath)) return;
+            if (_tempFilePath != null)
+                File.Delete(_tempFilePath);
         }
 
         private void LoadConfigValues()
         {
-            if (!Directory.Exists(_mainDir))
+            if (!Directory.Exists(MainDir))
             {
                 Logger.Log("Creating main directory.");
-                Directory.CreateDirectory(_mainDir);
+                Directory.CreateDirectory(MainDir);
             }
-            if (!File.Exists(_configFile))
+            if (!File.Exists(ConfigFile))
             {
                 Logger.Log("Creating config file.");
-                File.WriteAllText(_configFile, Properties.Resources.config);
+                File.WriteAllText(ConfigFile, Resources.config);
             }
 
-            Config = ScriptSettings.Load(_configFile);
-            contactIndex = Config.GetValue("General", "StartIndex", 40);
-            CheckForUpdates = Config.GetValue("General", "CheckForUpdates", true);
+            Config = ScriptSettings.Load(ConfigFile);
+            _contactIndex = Config.GetValue("General", "StartIndex", 40);
+            _checkForUpdates = Config.GetValue("General", "CheckForUpdates", true);
         }
 
         private bool IsUpdateAvailable()
         {
-            string downloadedString = "";
-            Version onlineVersion;
-
             try
             {
-                WebClient client = new WebClient();
-                downloadedString = client.DownloadString("https://raw.githubusercontent.com/Bob74/iFruitAddon2/master/version");
+                var client = new WebClient();
+                var downloadedString = client.DownloadString("https://raw.githubusercontent.com/Bob74/iFruitAddon2/master/version");
 
                 downloadedString = downloadedString.Replace("\r", "");
                 downloadedString = downloadedString.Replace("\n", "");
 
-                onlineVersion = new Version(downloadedString);
+                var onlineVersion = new Version(downloadedString);
 
                 client.Dispose();
 
                 if (onlineVersion.CompareTo(Assembly.GetExecutingAssembly().GetName().Version) > 0)
                     return true;
-                else
-                    return false;
+                return false;
             }
             catch (Exception e)
             {
@@ -168,7 +163,7 @@ namespace iFruitAddon2
 
         private void NotifyNewUpdate()
         {
-            UI.Notify("iFruitAddon2: A new update is available!", true);
+            GTA.UI.Notification.Show("iFruitAddon2: A new update is available!", true);
         }
     }
 }

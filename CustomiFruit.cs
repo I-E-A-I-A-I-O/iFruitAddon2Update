@@ -1,20 +1,20 @@
 ﻿using System.Drawing;
-
 using GTA;
 using GTA.Native;
+using iFruitAddon2.Image_Types;
 
 namespace iFruitAddon2
 {
     //public delegate void ContactSelectedEvent(iFruitContactCollection sender, iFruitContact selectedItem);
-    public delegate void ContactAnsweredEvent(iFruitContact contact);
+    public delegate void ContactAnsweredEvent(IFruitContact contact);
 
     public class CustomiFruit
     {
-        private static CustomiFruit _instance;
+        private static CustomiFruit? _instance;
         private bool _shouldDraw = true;
         private PhoneImage _wallpaper;
-        private iFruitContactCollection _contacts;
-        private int _mScriptHash;
+        private IFruitContactCollection _contacts;
+        private readonly int _mScriptHash;
         private int _timerClose = -1;
 
         /// <summary>
@@ -50,20 +50,20 @@ namespace iFruitAddon2
         /// <summary>
         /// List of custom contacts in the phone
         /// </summary>
-        public iFruitContactCollection Contacts
+        public IFruitContactCollection Contacts
         {
-            get { return _contacts; }
-            set { _contacts = value; }
+            get => _contacts;
+            set => _contacts = value;
         }
 
-        public CustomiFruit() : this(new iFruitContactCollection())
+        public CustomiFruit() : this(new IFruitContactCollection())
         { }
 
         /// <summary>
         /// Initialize the class.
         /// </summary>
         /// <param name="contacts"></param>
-        public CustomiFruit(iFruitContactCollection contacts)
+        public CustomiFruit(IFruitContactCollection contacts)
         {
             _instance = this;
             _contacts = contacts;
@@ -73,12 +73,12 @@ namespace iFruitAddon2
         /// <summary>
         /// Handle of the current scaleform.
         /// </summary>
-        public static CustomiFruit GetCurrentInstance() { return _instance; }
+        public static CustomiFruit? GetCurrentInstance() { return _instance; }
         public int Handle
         {
             get
             {
-                int h = 0;
+                int h;
                 switch ((uint)Game.Player.Character.Model.Hash)
                 {
                     case (uint)PedHash.Michael:
@@ -111,49 +111,49 @@ namespace iFruitAddon2
         /// <param name="text"></param>
         public void SetTextHeader(string text)
         {
-            Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION, Handle, "SET_HEADER");
-            Function.Call(Hash._BEGIN_TEXT_COMPONENT, "STRING");
-            Function.Call(Hash._0x761B77454205A61D, text, -1);
-            Function.Call(Hash._END_TEXT_COMPONENT);
-            Function.Call(Hash._POP_SCALEFORM_MOVIE_FUNCTION_VOID);
+            Function.Call(Hash.BEGIN_SCALEFORM_MOVIE_METHOD, Handle, "SET_HEADER");
+            Function.Call(Hash.BEGIN_TEXT_COMMAND_SCALEFORM_STRING, "STRING");
+            Function.Call(Hash.ADD_TEXT_COMPONENT_SUBSTRING_PHONE_NUMBER, text, -1);
+            Function.Call(Hash.END_TEXT_COMMAND_SCALEFORM_STRING);
+            Function.Call(Hash.END_SCALEFORM_MOVIE_METHOD);
         }
 
         /// <summary>
         /// Set icon of the soft key buttons directly.
         /// </summary>
-        /// <param name="buttonID">The button index</param>
+        /// <param name="buttonId">The button index</param>
         /// <param name="icon">Supplied icon</param>
-        public void SetSoftKeyIcon(int buttonID, SoftKeyIcon icon)
+        public void SetSoftKeyIcon(int buttonId, SoftKeyIcon icon)
         {
-            Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION, Handle, "SET_SOFT_KEYS");
-            Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_INT, buttonID);
-            Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_BOOL, true);
-            Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_INT, (int)icon);
-            Function.Call(Hash._POP_SCALEFORM_MOVIE_FUNCTION_VOID);
+            Function.Call(Hash.BEGIN_SCALEFORM_MOVIE_METHOD, Handle, "SET_SOFT_KEYS");
+            Function.Call(Hash.SCALEFORM_MOVIE_METHOD_ADD_PARAM_INT, buttonId);
+            Function.Call(Hash.SCALEFORM_MOVIE_METHOD_ADD_PARAM_BOOL, true);
+            Function.Call(Hash.SCALEFORM_MOVIE_METHOD_ADD_PARAM_INT, (int)icon);
+            Function.Call(Hash.END_SCALEFORM_MOVIE_METHOD);
         }
 
         /// <summary>
         /// Set the color of the soft key buttons directly.
         /// </summary>
-        /// <param name="buttonID">The button index</param>
+        /// <param name="buttonId">The button index</param>
         /// <param name="color">Supplied color</param>
-        public void SetSoftKeyColor(int buttonID, Color color)
+        public void SetSoftKeyColor(int buttonId, Color color)
         {
-            Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION, Handle, "SET_SOFT_KEYS_COLOUR");
-            Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_INT, buttonID);
-            Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_INT, color.R);
-            Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_INT, color.G);
-            Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_INT, color.B);
-            Function.Call(Hash._POP_SCALEFORM_MOVIE_FUNCTION_VOID);
+            Function.Call(Hash.BEGIN_SCALEFORM_MOVIE_METHOD, Handle, "SET_SOFT_KEYS_COLOUR");
+            Function.Call(Hash.SCALEFORM_MOVIE_METHOD_ADD_PARAM_INT, buttonId);
+            Function.Call(Hash.SCALEFORM_MOVIE_METHOD_ADD_PARAM_INT, color.R);
+            Function.Call(Hash.SCALEFORM_MOVIE_METHOD_ADD_PARAM_INT, color.G);
+            Function.Call(Hash.SCALEFORM_MOVIE_METHOD_ADD_PARAM_INT, color.B);
+            Function.Call(Hash.END_SCALEFORM_MOVIE_METHOD);
         }
 
-        internal void SetWallpaperTXD(string textureDict)
+        internal void SetWallpaperTxd(string textureDict)
         {
-            Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION, Handle, "SET_BACKGROUND_CREW_IMAGE");
-            Function.Call(Hash._BEGIN_TEXT_COMPONENT, "CELL_2000");
-            Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, textureDict);
-            Function.Call(Hash._END_TEXT_COMPONENT);
-            Function.Call(Hash._POP_SCALEFORM_MOVIE_FUNCTION_VOID);
+            Function.Call(Hash.BEGIN_SCALEFORM_MOVIE_METHOD, Handle, "SET_BACKGROUND_CREW_IMAGE");
+            Function.Call(Hash.BEGIN_TEXT_COMMAND_SCALEFORM_STRING, "CELL_2000");
+            Function.Call(Hash.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME, textureDict);
+            Function.Call(Hash.END_TEXT_COMMAND_SCALEFORM_STRING);
+            Function.Call(Hash.END_SCALEFORM_MOVIE_METHOD);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace iFruitAddon2
 
         public void Update()
         {
-            if (Function.Call<int>(Hash._GET_NUMBER_OF_INSTANCES_OF_STREAMED_SCRIPT, _mScriptHash) > 0)
+            if (Function.Call<int>(Hash._GET_NUMBER_OF_REFERENCES_OF_SCRIPT_WITH_NAME_HASH, _mScriptHash) > 0)
             {
                 if (_shouldDraw)
                 {
@@ -198,7 +198,7 @@ namespace iFruitAddon2
                         SetSoftKeyIcon(3, RightButtonIcon);
 
                     if (_wallpaper != null)
-                        SetWallpaperTXD(_wallpaper.Name);
+                        SetWallpaperTxd(_wallpaper.Name);
 
                     _shouldDraw = !_shouldDraw;
                 }  
@@ -234,10 +234,10 @@ namespace iFruitAddon2
         }
         private void Close()
         {
-            if (Function.Call<int>(Hash._GET_NUMBER_OF_INSTANCES_OF_STREAMED_SCRIPT, _mScriptHash) > 0)
+            if (Function.Call<int>(Hash._GET_NUMBER_OF_REFERENCES_OF_SCRIPT_WITH_NAME_HASH, _mScriptHash) > 0)
             {
-                Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION, Handle, "SHUTDOWN_MOVIE");
-                Function.Call(Hash._POP_SCALEFORM_MOVIE_FUNCTION_VOID);
+                Function.Call(Hash.BEGIN_SCALEFORM_MOVIE_METHOD, Handle, "SHUTDOWN_MOVIE");
+                Function.Call(Hash.END_SCALEFORM_MOVIE_METHOD);
 
                 Script.Yield();
 
